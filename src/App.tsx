@@ -11,6 +11,7 @@ import CTASection from './sections/CTASection';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import AudioTranslate from './pages/AudioTranslate';
 import DashboardLayout from './layouts/DashboardLayout';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
+          <Route path="translate" element={<AudioTranslate />} />
         </Route>
         <Route path="/" element={
           <div className="min-h-screen bg-dark text-white overflow-hidden">
