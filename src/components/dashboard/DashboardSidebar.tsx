@@ -1,22 +1,28 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { Home, Settings, BarChart2, Users, FileText } from 'lucide-react';
+import { useRouter } from 'next/router';
 
 interface SidebarLinkProps {
-  to: string;
+  href: string;
   icon: React.ReactNode;
   label: string;
 }
 
-const SidebarLink: React.FC<SidebarLinkProps> = ({ to, icon, label }) => (
-  <Link
-    to={to}
-    className="flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200"
-  >
-    {icon}
-    <span className="font-medium">{label}</span>
-  </Link>
-);
+const SidebarLink: React.FC<SidebarLinkProps> = ({ href, icon, label }) => {
+  const router = useRouter();
+  const isActive = router.pathname === href;
+  
+  return (
+    <Link
+      href={href}
+      className={`flex items-center gap-3 px-4 py-3 ${isActive ? 'bg-gray-100 text-indigo-600' : 'text-gray-700 hover:bg-gray-100'} rounded-lg transition-colors duration-200`}
+    >
+      {icon}
+      <span className="font-medium">{label}</span>
+    </Link>
+  );
+};
 
 const DashboardSidebar: React.FC = () => {
   return (
@@ -27,27 +33,27 @@ const DashboardSidebar: React.FC = () => {
       
       <nav className="px-2 py-4 space-y-1">
         <SidebarLink 
-          to="/dashboard" 
+          href="/dashboard" 
           icon={<Home className="w-5 h-5" />} 
           label="Overview" 
         />
         <SidebarLink 
-          to="/dashboard/analytics" 
+          href="/dashboard/analytics" 
           icon={<BarChart2 className="w-5 h-5" />} 
           label="Analytics" 
         />
         <SidebarLink 
-          to="/dashboard/users" 
+          href="/dashboard/users" 
           icon={<Users className="w-5 h-5" />} 
           label="Users" 
         />
         <SidebarLink 
-          to="/dashboard/documents" 
+          href="/dashboard/documents" 
           icon={<FileText className="w-5 h-5" />} 
           label="Documents" 
         />
         <SidebarLink 
-          to="/dashboard/settings" 
+          href="/dashboard/settings" 
           icon={<Settings className="w-5 h-5" />} 
           label="Settings" 
         />

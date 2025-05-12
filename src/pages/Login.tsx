@@ -1,20 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Volume2, Mail, Lock, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Volume2, Mail, Lock, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 import Button from '../components/Button';
+import axios from 'axios';
 
 const Login: React.FC = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Afficher un message après l'inscription
+  useEffect(() => {
+    if (router.query.registered === 'true') {
+      setSuccessMessage('Votre compte a été créé avec succès. Veuillez vous connecter.');
+    }
+  }, [router.query.registered]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    setError(null);
+    
+    try {
+      // Appel à notre API de connexion
+      const response = await axios.post('/api/auth/login', {
+        email,
+        password
+      });
+      
+      // Stockage des données utilisateur si nécessaire
+      localStorage.setItem('userSession', JSON.stringify(response.data));
+      
+      // Redirection vers le tableau de bord après une connexion réussie
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      console.error('Erreur de connexion:', err);
+      const axiosError = err as { response?: { data?: { error?: string } } };
+      setError(
+        axiosError.response?.data?.error || 
+        'Une erreur est survenue lors de la connexion'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -24,7 +57,7 @@ const Login: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="sm:mx-auto sm:w-full sm:max-w-md"
       >
-        <Link to="/" className="flex items-center justify-center gap-2 mb-8">
+        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
           <div className="relative w-10 h-10 flex items-center justify-center">
             <motion.div 
               animate={{ 
@@ -48,7 +81,7 @@ const Login: React.FC = () => {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-400">
           Ou{' '}
-          <Link to="/register" className="font-medium text-primary-400 hover:text-primary-500">
+          <Link href="/Register" className="font-medium text-primary-400 hover:text-primary-500">
             créez un compte gratuitement
           </Link>
         </p>
@@ -61,6 +94,20 @@ const Login: React.FC = () => {
         className="mt-8 sm:mx-auto sm:w-full sm:max-w-md"
       >
         <div className="glass-card py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {successMessage && (
+            <div className="mb-4 p-3 bg-green-500/20 border border-green-500/50 rounded-md flex items-start">
+              <CheckCircle2 className="w-5 h-5 text-green-500 mt-0.5 mr-2 flex-shrink-0" />
+              <p className="text-sm text-green-200">{successMessage}</p>
+            </div>
+          )}
+          
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-md flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 mr-2 flex-shrink-0" />
+              <p className="text-sm text-red-200">{error}</p>
+            </div>
+          )}
+          
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium">
@@ -83,9 +130,16 @@ const Login: React.FC = () => {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium">
-                Mot de passe
-              </label>
+              <div className="flex items-center justify-between">
+                <label htmlFor="password" className="block text-sm font-medium">
+                  Mot de passe
+                </label>
+                <div className="text-sm">
+                  <Link href="/forgot-password" className="font-medium text-primary-400 hover:text-primary-500">
+                    Mot de passe oublié ?
+                  </Link>
+                </div>
+              </div>
               <div className="mt-1 relative">
                 <input
                   id="password"
@@ -102,24 +156,16 @@ const Login: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-gray-700 bg-darkBlue/40 text-primary-500 focus:ring-primary-500/50"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-400">
-                  Se souvenir de moi
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <Link to="/forgot-password" className="font-medium text-primary-400 hover:text-primary-500">
-                  Mot de passe oublié ?
-                </Link>
-              </div>
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 rounded border-gray-700 bg-darkBlue/40 text-primary-500 focus:ring-primary-500/50"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-400">
+                Se souvenir de moi
+              </label>
             </div>
 
             <Button

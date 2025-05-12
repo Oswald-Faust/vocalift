@@ -9,6 +9,7 @@ interface ButtonProps {
   onClick?: () => void;
   icon?: React.ReactNode;
   fullWidth?: boolean;
+  type?: 'button' | 'submit' | 'reset';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,6 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   icon,
   fullWidth = false,
+  type = 'button',
 }) => {
   const baseStyles = "inline-flex items-center justify-center rounded-lg font-medium transition-all";
   
@@ -38,6 +40,7 @@ const Button: React.FC<ButtonProps> = ({
   
   return (
     <motion.button
+      type={type}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className}`}

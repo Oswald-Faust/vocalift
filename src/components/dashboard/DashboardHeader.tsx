@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, Plus, Bell, ChevronDown } from 'lucide-react';
 import Button from '../Button';
+import Link from 'next/link';
 
 interface DashboardHeaderProps {
   setMobileMenuOpen: (open: boolean) => void;
@@ -77,24 +78,24 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
                     exit={{ opacity: 0, y: 10 }}
                     className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-darkBlue py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
                   >
-                    <a
-                      href="#"
+                    <Link
+                      href="/dashboard/profile"
                       className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
                     >
                       Mon profil
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      href="/dashboard/settings"
                       className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
                     >
                       Paramètres
-                    </a>
-                    <a
-                      href="#"
+                    </Link>
+                    <Link
+                      href="/Login"
                       className="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-800"
                     >
                       Déconnexion
-                    </a>
+                    </Link>
                   </motion.div>
                 )}
               </AnimatePresence>

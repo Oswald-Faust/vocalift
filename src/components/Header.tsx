@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Menu, X, Volume2 } from 'lucide-react';
 import { NavLink } from '../types';
+import Link from 'next/link';
 
 const navLinks: NavLink[] = [
   { id: 1, title: 'Fonctionnalités', href: '#features' },
@@ -62,9 +63,12 @@ const Header: React.FC = () => {
               {link.title}
             </a>
           ))}
-          <a href="#cta" className="btn btn-primary">
-            Essayer maintenant
-          </a>
+          <Link href="/Login" className="text-gray-300 hover:text-primary-400 transition-colors">
+            Connexion
+          </Link>
+          <Link href="/Register" className="btn btn-primary">
+            S'inscrire
+          </Link>
         </nav>
         
         <button
@@ -94,13 +98,20 @@ const Header: React.FC = () => {
                 {link.title}
               </a>
             ))}
-            <a 
-              href="#cta" 
+            <Link
+              href="/Login"
+              onClick={() => setIsOpen(false)}
+              className="text-gray-300 hover:text-primary-400 py-2 transition-colors"
+            >
+              Connexion
+            </Link>
+            <Link
+              href="/Register"
               onClick={() => setIsOpen(false)}
               className="btn btn-primary w-full text-center"
             >
-              Essayer maintenant
-            </a>
+              S'inscrire
+            </Link>
           </div>
         </motion.div>
       )}

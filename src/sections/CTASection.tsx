@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Button from '../components/Button';
-import WaitlistForm from '../components/WaitlistForm';
+import Link from 'next/link';
 
 const CTASection: React.FC = () => {
   return (
@@ -21,7 +21,7 @@ const CTASection: React.FC = () => {
           className="glass-card p-8 md:p-12 max-w-4xl mx-auto text-center"
         >
           <span className="inline-block px-4 py-1 rounded-full text-xs font-medium bg-accent-500/20 text-accent-400 mb-6">
-            Accès anticipé
+            Disponible maintenant
           </span>
           <h2 className="text-3xl md:text-4xl font-bold mb-6 leading-tight">
             Prêt à rendre votre contenu{' '}
@@ -31,10 +31,30 @@ const CTASection: React.FC = () => {
             ?
           </h2>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
-            Rejoignez notre liste d'attente et soyez parmi les premiers à essayer Vocalift. Nous vous enverrons un accès prioritaire dès que nous serons prêts.
+            Inscrivez-vous dès maintenant et commencez à transformer vos fichiers audio. Créez un compte gratuit en quelques secondes.
           </p>
           
-          <WaitlistForm />
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href="/Register" className="w-full sm:w-auto">
+              <Button 
+                variant="primary" 
+                fullWidth
+                className="group"
+                icon={<ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />}
+              >
+                Créer un compte gratuit
+              </Button>
+            </Link>
+            <Link href="/Login" className="w-full sm:w-auto">
+              <Button 
+                variant="outline" 
+                fullWidth
+                className="group"
+              >
+                Se connecter
+              </Button>
+            </Link>
+          </div>
           
           <div className="mt-8 flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-gray-400">
             <div className="flex items-center gap-2">
@@ -65,14 +85,16 @@ const CTASection: React.FC = () => {
         </motion.div>
         
         <div className="mt-20 text-center">
-          <p className="text-gray-400 mb-6">Déjà convaincu ? Découvrez nos offres</p>
-          <Button 
-            variant="outline" 
-            icon={<ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />}
-            className="group"
-          >
-            Voir les tarifs
-          </Button>
+          <p className="text-gray-400 mb-6">Déjà inscrit? Connectez-vous à votre compte</p>
+          <Link href="/Login">
+            <Button 
+              variant="outline" 
+              icon={<ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />}
+              className="group"
+            >
+              Se connecter
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

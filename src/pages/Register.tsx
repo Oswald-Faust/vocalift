@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import { Volume2, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Volume2, Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 import Button from '../components/Button';
+import axios from 'axios';
 
 const Register: React.FC = () => {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -13,13 +16,40 @@ const Register: React.FC = () => {
     acceptTerms: false
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsLoading(false);
+    setError(null);
+    
+    // Vérification des mots de passe
+    if (formData.password !== formData.confirmPassword) {
+      setError('Les mots de passe ne correspondent pas');
+      setIsLoading(false);
+      return;
+    }
+    
+    try {
+      // Appel à notre API d'enregistrement
+      await axios.post('/api/auth/register', {
+        email: formData.email,
+        password: formData.password,
+        fullName: formData.fullName
+      });
+      
+      // Redirection vers la page de connexion après l'inscription
+      router.push('/Login?registered=true');
+    } catch (err: unknown) {
+      console.error('Erreur d\'inscription:', err);
+      const axiosError = err as { response?: { data?: { error?: string } } };
+      setError(
+        axiosError.response?.data?.error || 
+        'Une erreur est survenue lors de la création du compte'
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,7 +67,7 @@ const Register: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="sm:mx-auto sm:w-full sm:max-w-md"
       >
-        <Link to="/" className="flex items-center justify-center gap-2 mb-8">
+        <Link href="/" className="flex items-center justify-center gap-2 mb-8">
           <div className="relative w-10 h-10 flex items-center justify-center">
             <motion.div 
               animate={{ 
@@ -61,7 +91,7 @@ const Register: React.FC = () => {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-400">
           Déjà inscrit ?{' '}
-          <Link to="/login" className="font-medium text-primary-400 hover:text-primary-500">
+          <Link href="/Login" className="font-medium text-primary-400 hover:text-primary-500">
             Connectez-vous
           </Link>
         </p>
@@ -74,6 +104,13 @@ const Register: React.FC = () => {
         className="mt-8 sm:mx-auto sm:w-full sm:max-w-md"
       >
         <div className="glass-card py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-md flex items-start">
+              <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 mr-2 flex-shrink-0" />
+              <p className="text-sm text-red-200">{error}</p>
+            </div>
+          )}
+          
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
               <label htmlFor="fullName" className="block text-sm font-medium">
@@ -167,7 +204,7 @@ const Register: React.FC = () => {
               />
               <label htmlFor="acceptTerms" className="ml-2 block text-sm text-gray-400">
                 J'accepte les{' '}
-                <Link to="/terms" className="font-medium text-primary-400 hover:text-primary-500">
+                <Link href="/terms" className="font-medium text-primary-400 hover:text-primary-500">
                   conditions d'utilisation
                 </Link>
               </label>
@@ -202,7 +239,6 @@ const Register: React.FC = () => {
 
               <div className="mt-6">
                 <Button
-                  type="button"
                   variant="outline"
                   fullWidth
                   onClick={() => {}}
